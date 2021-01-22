@@ -14,6 +14,9 @@ Vue.use(VueRouter);
 Vue.config.productionTip = false;
 Vue.use(Antd);
 
+// import maxios from './maxios'
+// Vue.prototype.maxios = maxios
+
 new Vue({
   router,
   store,
