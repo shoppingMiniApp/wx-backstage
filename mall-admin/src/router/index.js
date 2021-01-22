@@ -13,7 +13,33 @@ const routes = [
     path: "/main",
     name: "main",
     component: () => import("../views/main.vue"),
-    children: [],
+    children: [
+      {
+        path: "/account",
+        name: "account",
+        component: () => import("../views/pages/account.vue"),
+      },
+      {
+        path: "/sortModify",
+        name: "sortModify",
+        component: () => import("../views/pages/sortModify.vue"),
+      },
+      {
+        path: "/itemModify",
+        name: "itemModify",
+        component: () => import("../views/pages/itemModify.vue"),
+      },
+      {
+        path: "/bannerModify",
+        name: "bannerModify",
+        component: () => import("../views/pages/bannerModify.vue"),
+      },
+      {
+        path: "/orderModify",
+        name: "orderModify",
+        component: () => import("../views/pages/orderModify.vue"),
+      },
+    ],
   },
 ];
 
