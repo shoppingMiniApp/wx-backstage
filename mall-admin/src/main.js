@@ -5,9 +5,12 @@ import router from "./router";
 import store from "./store";
 import "ant-design-vue/dist/antd.css";
 import VueRouter from "vue-router";
+import axios from '@/myaxios'
+
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
 Vue.use(Antd);
+Vue.prototype.myaxios = axios
 
 new Vue({
   router,
