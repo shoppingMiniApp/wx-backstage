@@ -6,19 +6,45 @@
         <p>后台</p>
       </div>
       <div class="logo" v-else>Mall后台管理</div>
-      <a-menu theme="dark" mode="inline" :default-selected-keys="['1']">
-        <a-menu-item key="1">
-          <a-icon type="user" />
-          <span>账号管理</span>
-        </a-menu-item>
-        <a-menu-item key="2">
-          <a-icon type="video-camera" />
-          <span>nav 2</span>
-        </a-menu-item>
-        <a-menu-item key="3">
-          <a-icon type="upload" />
-          <span>nav 3</span>
-        </a-menu-item>
+      <a-menu
+        theme="dark"
+        mode="inline"
+        :default-selected-keys="['2']"
+        @click="navTo"
+      >
+        <a-sub-menu key="1">
+          <span slot="title"><a-icon type="audit" /><span>账号管理</span></span>
+          <a-menu-item key="2">
+            <a-icon type="user" />
+            <span>用户管理</span>
+          </a-menu-item>
+        </a-sub-menu>
+        <a-sub-menu key="3">
+          <span slot="title"
+            ><a-icon type="folder" /><span>商品管理</span></span
+          >
+          <a-menu-item key="4">
+            <a-icon type="bars" />
+            <span>分类添加/删除</span>
+          </a-menu-item>
+          <a-menu-item key="5">
+            <a-icon type="gift" />
+            <span>物品添加/删除</span>
+          </a-menu-item>
+          <a-menu-item key="6">
+            <a-icon type="file-image" />
+            <span>轮播图添加/删除</span>
+          </a-menu-item>
+        </a-sub-menu>
+        <a-sub-menu key="7">
+          <span slot="title"
+            ><a-icon type="profile" /><span>订单管理</span></span
+          >
+          <a-menu-item key="8">
+            <a-icon type="form" />
+            <span>状态/详情修改</span>
+          </a-menu-item>
+        </a-sub-menu>
       </a-menu>
     </a-layout-sider>
     <a-layout>
@@ -37,7 +63,7 @@
           minHeight: '280px',
         }"
       >
-        Content
+        <router-view />
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -55,6 +81,20 @@ export default {
     screenHeightChange() {
       let height = document.body.offsetHeight;
       this.screenHeight = { height: height + "px" };
+    },
+    navTo(key) {
+      console.log(key);
+      if (key.key == "2") {
+        this.$router.push("/account");
+      } else if (key.key == "4") {
+        this.$router.push("/sortModify");
+      } else if (key.key == "5") {
+        this.$router.push("/itemModify");
+      } else if (key.key == "6") {
+        this.$router.push("/bannerModify");
+      } else if (key.key == "8") {
+        this.$router.push("/orderModify");
+      }
     },
   },
   mounted() {
