@@ -13,14 +13,11 @@ const routes = [
     path: "/main",
     name: "main",
     component: () => import("../views/main.vue"),
-<<<<<<< HEAD
-    children: [],
     beforeEnter:(to,from,next)=>{
       if(localStorage.getItem("token")){
         next()
       }
-    }
-=======
+    },
     children: [
       {
         path: "/account",
@@ -48,7 +45,6 @@ const routes = [
         component: () => import("../views/pages/orderModify.vue"),
       },
     ],
->>>>>>> 2febce9c0499c5fdb3df791f76de3332a16bdada
   },
 ];
 
