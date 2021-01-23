@@ -5,6 +5,8 @@ import router from "./router";
 import store from "./store";
 import "ant-design-vue/dist/antd.css";
 import VueRouter from "vue-router";
+import axios from '@/myaxios'
+
 import Router from "vue-router";
 const routerPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
@@ -13,6 +15,7 @@ Router.prototype.push = function push(location) {
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
 Vue.use(Antd);
+Vue.prototype.myaxios = axios
 
 // import maxios from './maxios'
 // Vue.prototype.maxios = maxios
