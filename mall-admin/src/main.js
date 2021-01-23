@@ -8,6 +8,9 @@ import VueRouter from "vue-router";
 import Router from "vue-router";
 import { FormModel } from 'ant-design-vue';
 Vue.use(FormModel);
+import axios from '@/myaxios'
+
+import Router from "vue-router";
 const routerPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
   return routerPush.call(this, location).catch((error) => error);
@@ -15,6 +18,10 @@ Router.prototype.push = function push(location) {
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
 Vue.use(Antd);
+Vue.prototype.myaxios = axios
+
+// import maxios from './maxios'
+// Vue.prototype.maxios = maxios
 
 // import maxios from './maxios'
 // Vue.prototype.maxios = maxios
