@@ -13,6 +13,11 @@ const routes = [
     path: "/main",
     name: "main",
     component: () => import("../views/main.vue"),
+    beforeEnter:(to,from,next)=>{
+      if(localStorage.getItem("token")){
+        next()
+      }
+    },
     children: [
       {
         path: "/account",

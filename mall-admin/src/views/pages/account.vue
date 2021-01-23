@@ -28,12 +28,8 @@ const EditableCell = {
   template: `
       <div class="editable-cell">
         <div v-if="editable" class="editable-cell-input-wrapper">
-          <a-input :value="value" @change="handleChange" @pressEnter="check" /><a-icon
-            type="check"
-            class="editable-cell-icon-check"
-            @click="check"
-            :style="{width:200px}"
-          />
+          <a-input :value="value" @change="handleChange" @pressEnter="check" />
+          <a-icon type="check" class="editable-cell-icon-check" @click="check" />
         </div>
         <div v-else class="editable-cell-text-wrapper">
           {{ value || ' ' }}
@@ -139,47 +135,58 @@ export default {
 <style lang="less" scoped>
 #account {
   // padding: 20px 0;
-}
-.editable-cell {
-  position: relative;
-}
-
-.editable-cell-input-wrapper,
-.editable-cell-text-wrapper {
-  padding-right: 24px;
-}
-
-.editable-cell-text-wrapper {
-  padding: 5px 24px 5px 5px;
-}
-
-.editable-cell-icon,
-.editable-cell-icon-check {
-  position: absolute;
-  right: 0;
-  width: 20px;
-  cursor: pointer;
-}
-
-.editable-cell-icon {
-  line-height: 18px;
-  display: none;
-}
-
-.editable-cell-icon-check {
-  line-height: 28px;
-}
-
-.editable-cell:hover .editable-cell-icon {
-  display: inline-block;
-}
-
-.editable-cell-icon:hover,
-.editable-cell-icon-check:hover {
-  color: #108ee9;
-}
-
-.editable-add-btn {
-  margin-bottom: 8px;
+  .editable-cell {
+    position: relative;
+  }
+  .editable-cell-input-wrapper,
+  .editable-cell-text-wrapper {
+    padding-right: 24px;
+  }
+  .editable-cell-text-wrapper {
+    padding: 5px 24px 5px 5px;
+  }
+  .editable-cell-icon,
+  .editable-cell-icon-check {
+    position: absolute;
+    right: 0;
+    width: 20px;
+    cursor: pointer;
+  }
+  .editable-cell-icon {
+    line-height: 18px;
+    display: none;
+  }
+  .editable-cell-icon-check {
+    line-height: 28px;
+  }
+  .editable-cell:hover .editable-cell-icon {
+    display: inline-block;
+  }
+  .editable-cell-icon:hover,
+  .editable-cell-icon-check:hover {
+    color: #108ee9;
+  }
+  .editable-add-btn {
+    margin-bottom: 8px;
+  }
+  /deep/ .editable-cell-input-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    input {
+      width: 400px;
+    }
+    .editable-cell-icon-check {
+      padding: 0 20px;
+    }
+  }
+  /deep/.editable-cell-text-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    .editable-cell-icon {
+      padding: 0 20px;
+    }
+  }
 }
 </style>

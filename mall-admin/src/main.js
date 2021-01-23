@@ -5,9 +5,19 @@ import router from "./router";
 import store from "./store";
 import "ant-design-vue/dist/antd.css";
 import VueRouter from "vue-router";
+import Router from "vue-router";
+import { FormModel } from 'ant-design-vue';
+Vue.use(FormModel);
+const routerPush = Router.prototype.push;
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch((error) => error);
+};
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
 Vue.use(Antd);
+
+// import maxios from './maxios'
+// Vue.prototype.maxios = maxios
 
 new Vue({
   router,
