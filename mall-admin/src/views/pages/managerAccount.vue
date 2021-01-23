@@ -1,4 +1,4 @@
-// 用户管理
+// 管理账号管理
 <template>
   <div id="account">
     <a-button @click="getData">接口</a-button>
@@ -7,9 +7,9 @@
     </a-button> -->
     <a-table
       bordered
-      :data-source="datas"
+      :data-source="dataList"
       :columns="columns"
-      :row-key="(datas) => datas.user_id"
+      :row-key="(dataList) => dataList.admin_id"
     >
       <template slot="user_account" slot-scope="text">
         <div v-if="text == null" style="color:#999;">-此用户无名称-</div>
@@ -19,21 +19,23 @@
         <div v-if="text == null" style="color:#999;">-此用户无昵称-</div>
         <div v-else>{{ text }}</div>
       </template>
-      <!-- <template slot="name" slot-scope="text"> -->
-      <!-- <editable-cell
-          :text="text"
-          @change="onCellChange(record.key, 'name', $event)"
-        /> -->
-      <!-- <a>{{ text }}</a>
-      </template> -->
       <template slot="operation" slot-scope="text, record">
         <a-popconfirm
-          v-if="datas.length"
+          v-if="dataList.length"
           title="要删除此用户嘛？"
           @confirm="() => onDelete(record.user_id)"
         >
           <a href="javascript:;">删除</a>
         </a-popconfirm>
+      </template>
+      <template slot-scope="index, record" slot="switch">
+        <div>
+          <a-switch
+            @click.native="onChange(check, $event, record, index)"
+            :checked="check"
+            :index="record.admin_id"
+          />
+        </div>
       </template>
     </a-table>
   </div>
@@ -41,132 +43,46 @@
 <script>
 const axios = require("axios");
 
-// const EditableCell = {
-//   template: `
-//       <div class="editable-cell">
-//         <div v-if="editable" class="editable-cell-input-wrapper">
-//           <a-input :value="value" @change="handleChange" @pressEnter="check" />
-//           <a-icon type="check" class="editable-cell-icon-check" @click="check" />
-//         </div>
-//         <div v-else class="editable-cell-text-wrapper">
-//           {{ value || ' ' }}
-//           <a-icon type="edit" class="editable-cell-icon" @click="edit" />
-//         </div>
-//       </div>
-//     `,
-//   props: {
-//     text: String,
-//   },
-//   data() {
-//     return {
-//       value: this.text,
-//       editable: false,
-//     };
-//   },
-//   methods: {
-//     handleChange(e) {
-//       const value = e.target.value;
-//       this.value = value;
-//     },
-//     check() {
-//       this.editable = false;
-//       this.$emit("change", this.value);
-//     },
-//     edit() {
-//       this.editable = true;
-//     },
-//   },
-// };
-
 export default {
   components: {
     // EditableCell,
   },
   data() {
     return {
-      datas: [
+      te: true,
+      check: false,
+      dataList: [
         {
-          create_time: 1611223930,
-          credit: 0,
-          email: null,
-          icon:
-            "https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTL7jibAwkM5czGjOXe61iaDVpCW6qAsBM3uAe53HXrtldgdPyfLBWwevfJeFrV7Mjicjv2kicwicmGl6og/132",
-          insert: null,
-          last_login_time: 1611223930,
-          nick_name: "Eʟɪᴀᴜᴋ.",
-          openid: "undefined",
-          phone: null,
-          pw: null,
-          qq: 0,
-          real_name: null,
-          sex: 3,
+          admin_id: 407,
+          admin_name: "955",
+          create_time: 1611302917,
+          last_login_time: 1611302924,
+          pw: "955",
           status: 1,
-          token: "dd39ab1c553b36e8affc1392dabbe21a",
-          user_account: null,
-          user_id: 357,
-          user_type: 1,
+          token: "b114feb7295cec3df03dff8e2a4e5f67",
         },
         {
-          create_time: 1611194351,
-          credit: 0,
-          email: null,
-          icon: null,
-          insert: null,
-          last_login_time: 1611194351,
-          nick_name: null,
-          openid: null,
-          phone: null,
-          pw: "1",
-          qq: 0,
-          real_name: null,
-          sex: 3,
+          admin_id: 406,
+          admin_name: "9",
+          create_time: 1611302508,
+          last_login_time: 1611303402,
+          pw: "9",
           status: 1,
-          token: "e30c3d1ded3f2d38be58cf4052d5a6ba",
-          user_account: "拾柒",
-          user_id: 356,
-          user_type: 1,
+          token: "d7d60fe7d1cc955571cf3f0fb6c11d0a",
         },
       ],
-      // dataSource: [
-      //   {
-      //     key: "0",
-      //     name: "Edward King 0",
-      //     age: "32",
-      //     address: "London, Park Lane no. 0",
-      //   },
-      //   {
-      //     key: "1",
-      //     name: "Edward King 1",
-      //     age: "32",
-      //     address: "London, Park Lane no. 1",
-      //   },
-      // ],
       count: 2,
       columns: [
         {
           title: "ID",
-          dataIndex: "user_id",
+          dataIndex: "admin_id",
           // width: "40%",
-          scopedSlots: { customRender: "ID" },
+          scopedSlots: { customRender: "admin_id" },
         },
         {
-          title: "账号名称",
-          dataIndex: "user_account",
-          scopedSlots: { customRender: "user_account" },
-        },
-        // {
-        //   title: "头像",
-        //   dataIndex: "icon",
-        //   scopedSlots: { customRender: "icon" },
-        // },
-        {
-          title: "用户昵称",
-          dataIndex: "nick_name",
-          scopedSlots: { customRender: "nick_name" },
-        },
-        {
-          title: "用户类型",
-          dataIndex: "user_type",
+          title: "管理员名称",
+          dataIndex: "admin_name",
+          scopedSlots: { customRender: "admin_name" },
         },
         {
           title: "创建时间",
@@ -181,6 +97,10 @@ export default {
           dataIndex: "operation",
           scopedSlots: { customRender: "operation" },
         },
+        {
+          title: "禁用开关",
+          scopedSlots: { customRender: "switch" },
+        },
       ],
       token: localStorage.getItem("token"),
     };
@@ -194,15 +114,39 @@ export default {
         url: "http://api_devs.wanxikeji.cn/api/admin/accountList",
         data: {
           token: _this.token,
+          page: "1",
+          size: "391",
         },
       })
         .then(function(res) {
-          console.log(res.data, "list");
-          // _this.datas = res.data.data.data;
+          console.log(res.data.data, "list");
+          _this.dataList = res.data.data.data;
         })
         .catch(function(error) {
           console.log(error);
         });
+    },
+    onChange(checked, event, record, index) {
+      console.log(checked, event, record, index);
+      console.log(event.currentTarget.getAttribute("index"), "e");
+
+      //   console.log(checked);
+      //   console.log(record);
+      //   var _this = this;
+      //   axios({
+      //     method: "post",
+      //     url: "http://api_devs.wanxikeji.cn/api/admin/accountBan",
+      //     data: {
+      //       token: _this.token,
+      //       id: record.admin_id,
+      //     },
+      //   })
+      //     .then(function(res) {
+      //       console.log(res, "ban");
+      //     })
+      //     .catch(function(err) {
+      //       console.log(err);
+      //     });
     },
     //*表单事件
     // onCellChange(key, dataIndex, value) {
@@ -231,6 +175,7 @@ export default {
     // },
   },
   mounted() {
+    // this.getData();
     // var _this = this;
     // axios({
     //   method: "post",

@@ -13,12 +13,17 @@ const routes = [
     path: "/main",
     name: "main",
     component: () => import("../views/main.vue"),
-    beforeEnter:(to,from,next)=>{
-      if(localStorage.getItem("token")){
-        next()
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem("token")) {
+        next();
       }
     },
     children: [
+      {
+        path: "/managerAccount",
+        name: "managerAccount",
+        component: () => import("../views/pages/managerAccount.vue"),
+      },
       {
         path: "/account",
         name: "account",

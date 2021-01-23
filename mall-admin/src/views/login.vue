@@ -6,7 +6,7 @@
     <div class="login">
       <h1>小程序后台管理</h1>
       <p>
-        <span><a-icon type="user" /></span>
+        <span><a-icon type="user"/></span>
         <input
           type="text"
           placeholder="请输入您的账号"
@@ -16,7 +16,7 @@
         <b ref="noname">nama不能为空</b>
       </p>
       <p>
-        <span><a-icon type="key" /></span>
+        <span><a-icon type="key"/></span>
         <a href="javascript:;" ref="open" v-if="show" @click="eyes()"
           ><a-icon type="eye"
         /></a>
@@ -108,7 +108,7 @@ export default {
           } else {
             console.log(result);
             localStorage.setItem("token", result.data.data.token);
-            // this.$router.push("/main");
+            this.$router.push("/main");
           }
         })
         .catch((err) => {
