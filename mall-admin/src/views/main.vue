@@ -57,20 +57,37 @@
         class="header"
         style="background: #fff; padding: 0;text-align:left;"
       >
-        <a-icon
-          class="trigger"
-          :type="collapsed ? 'menu-unfold' : 'menu-fold'"
-          @click="() => (collapsed = !collapsed)"
-        />
+        <section>
+          <a-icon
+            class="trigger"
+            :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+            @click="() => (collapsed = !collapsed)"
+          />
 
-        <a-tabs :activeKey="key" @change="callback" class="tabs">
-          <a-tab-pane key="1" tab="管理" />
-          <a-tab-pane key="2" tab="用户" />
-          <a-tab-pane key="3" tab="分类" />
-          <a-tab-pane key="4" tab="物品" />
-          <a-tab-pane key="5" tab="轮播" />
-          <a-tab-pane key="6" tab="订单" />
-        </a-tabs>
+          <a-tabs :activeKey="key" @change="callback" class="tabs">
+            <a-tab-pane key="1" tab="管理" />
+            <a-tab-pane key="2" tab="用户" />
+            <a-tab-pane key="3" tab="分类" />
+            <a-tab-pane key="4" tab="物品" />
+            <a-tab-pane key="5" tab="轮播" />
+            <a-tab-pane key="6" tab="订单" />
+          </a-tabs>
+        </section>
+
+        <div>
+          <a-avatar
+            shape="square"
+            size="large"
+            :style="{
+              backgroundColor: '#f56a00',
+              verticalAlign: 'middle',
+              marginRight: '20px',
+            }"
+          >
+            KTM
+          </a-avatar>
+          <a href="javascript:;" @click="logOut">退出</a>
+        </div>
       </a-layout-header>
       <a-layout-content
         :style="{
@@ -152,6 +169,10 @@ export default {
         this.key = "6";
       }
     },
+    logOut() {
+      localStorage.setItem("token", "");
+      this.$router.push("/");
+    },
   },
   mounted() {
     window.onresize = () => {
@@ -200,11 +221,24 @@ export default {
 }
 /deep/.header {
   display: flex;
-  align-items: flex-end;
-  .tabs {
-    align-self: flex-end;
-    .ant-tabs-bar {
-      margin: 0;
+  // align-items: flex-end;
+  justify-content: space-between;
+  section {
+    display: flex;
+    align-items: flex-end;
+    .tabs {
+      align-self: flex-end;
+      .ant-tabs-bar {
+        margin: 0;
+      }
+    }
+  }
+  div {
+    display: flex;
+    align-items: center;
+    a {
+      line-height: 0;
+      margin-right: 20px;
     }
   }
 }

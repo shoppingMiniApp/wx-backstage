@@ -14,7 +14,7 @@ const routes = [
     name: "main",
     component: () => import("../views/main.vue"),
     beforeEnter: (to, from, next) => {
-      if (localStorage.getItem("token")) {
+      if (localStorage.getItem("token") != "") {
         next();
       }
     },
