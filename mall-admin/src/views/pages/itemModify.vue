@@ -105,7 +105,7 @@ function getBase64(img, callback) {
   reader.readAsDataURL(img);
 }
 const key = "updatable";
-import axios from "@/maxios/index.js"; /*引入封装的axios*/
+const axios = require("axios");
 const data = [];
 for (let i = 0; i < 46; i++) {
   data.push({

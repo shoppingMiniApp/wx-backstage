@@ -16,6 +16,15 @@
         <div v-if="text == null" style="color:#999;">-此用户无昵称-</div>
         <div v-else>{{ text }}</div>
       </template>
+      <template slot-scope="record" slot="switch">
+        <div>
+          <a-switch
+            :loading="loads"
+            @click="onChange(record.user_id)"
+            :checked="ban(record.status)"
+          />
+        </div>
+      </template>
       <template slot="operation" slot-scope="text, record">
         <a-popconfirm
           v-if="datas.length"
@@ -32,6 +41,7 @@
 export default {
   data() {
     return {
+      loads: false,
       load: true,
       datas: [],
       count: 2,
@@ -70,6 +80,10 @@ export default {
           dataIndex: "last_login_time",
         },
         {
+          title: "禁用用户",
+          scopedSlots: { customRender: "switch" },
+        },
+        {
           title: "操作",
           dataIndex: "operation",
           scopedSlots: { customRender: "operation" },
@@ -79,6 +93,32 @@ export default {
     };
   },
   methods: {
+    ban(status) {
+      if (status == 1) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    async onChange(rec) {
+      this.loads = true;
+      let res = await this.$axios({
+        method: "post",
+        url: "api/admin/userAccountBan",
+        data: {
+          token: this.token,
+          id: rec.toString(),
+        },
+      });
+      console.log(res);
+      if (res.data.code == 2000) {
+        this.getData();
+        this.loads = false;
+        this.$message.success("操作成功", 1);
+      } else {
+        this.$message.error("操作有误", 1);
+      }
+    },
     //*请求数据
     async getData() {
       let res = await this.$axios({
@@ -93,6 +133,7 @@ export default {
       if (res.data.code == 2000) {
         this.datas = res.data.data.data;
         this.load = false;
+        console.log(this.datas);
       } else {
         this.$message.error("请求错误！", 1);
       }

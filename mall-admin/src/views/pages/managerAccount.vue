@@ -29,9 +29,7 @@
         <span slot="addonBefore">密码：</span>
       </a-input-password>
     </a-modal>
-    <!-- <a-button class="editable-add-btn" @click="handleAdd">
-      Add
-    </a-button> -->
+
     <a-table
       bordered
       :data-source="dataList"
@@ -56,12 +54,12 @@
           <a href="javascript:;">删除</a>
         </a-popconfirm>
       </template>
-      <template slot-scope="index, record" slot="switch">
+      <template slot-scope="record" slot="switch">
         <div>
           <a-switch
-            @click.native="onChange(check, $event, record, index)"
-            :checked="check"
-            :index="record.admin_id"
+            :loading="loads"
+            @click="onChange(record.admin_id)"
+            :checked="ban(record.status)"
           />
         </div>
       </template>
@@ -73,6 +71,7 @@ export default {
   components: {},
   data() {
     return {
+      loads: false,
       name: "",
       password: "",
       visible: false,
@@ -101,19 +100,26 @@ export default {
           dataIndex: "last_login_time",
         },
         {
+          title: "禁用开关",
+          scopedSlots: { customRender: "switch" },
+        },
+        {
           title: "操作",
           dataIndex: "operation",
           scopedSlots: { customRender: "operation" },
-        },
-        {
-          title: "禁用开关",
-          scopedSlots: { customRender: "switch" },
         },
       ],
       token: localStorage.getItem("token"),
     };
   },
   methods: {
+    ban(status) {
+      if (status == 1) {
+        return false;
+      } else {
+        return true;
+      }
+    },
     register() {
       this.$axios({
         method: "post",
@@ -154,13 +160,30 @@ export default {
         },
       });
 
-      if (res.data.data.data) {
+      if (res.data.code == 2000) {
         this.load = false;
         this.dataList = res.data.data.data;
+        // console.log(this.dataList);
       }
     },
-    onChange(checked, event, record, index) {
-      console.log(checked, event, record, index);
+    async onChange(rec) {
+      this.loads = true;
+      let res = await this.$axios({
+        method: "post",
+        url: "api/admin/accountBan",
+        data: {
+          token: this.token,
+          id: rec.toString(),
+        },
+      });
+      console.log(res);
+      if (res.data.code == 2000) {
+        this.getData();
+        this.loads = false;
+        this.$message.success("操作成功", 1);
+      } else {
+        this.$message.error("操作有误", 1);
+      }
     },
     //*表单事件
     onDelete(key) {
