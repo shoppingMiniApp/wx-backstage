@@ -7,12 +7,7 @@ export default {
   data() {
     return {};
   },
-  mounted() {
-    this.myaxios({
-      url: "api/admin/goodsTypeList",
-      method: "post",
-    });
-  },
+  mounted() {},
   methods: {},
 };
 </script>

@@ -11,6 +11,7 @@
           type="text"
           placeholder="请输入您的账号"
           ref="name"
+          v-model="name"
           @focus="focus()"
         />
         <b ref="noname">nama不能为空</b>
@@ -28,25 +29,46 @@
           placeholder="请输入您的密码"
           ref="password"
           @focus="focus()"
+          v-model="password"
         />
         <b ref="nopassword">nama不能为空</b>
       </p>
-      <p @click="login()" class="go" ref="resever2">登录</p>
+      <p @click="connect" class="go" ref="resever2">登录</p>
       <a href="#" ref="resever1" @click="resever()">注册</a>
     </div>
     <div class="message" ref="success">注册成功</div>
   </div>
 </template>
 <script>
-import axios from "@/maxios/index.js"; /*引入封装的axios*/
+const axios = require("axios");
+
 export default {
   data() {
     return {
       show: false,
       token: "",
+      name: "",
+      password: "",
     };
   },
   methods: {
+    connect() {
+      this.$axios({
+        url: "api/admin/login",
+        method: "post",
+        data: {
+          name: this.name,
+          pw: this.password,
+        },
+        withCredentials: false,
+      }).then((res) => {
+        console.log(res);
+        if (res.data.msg == "") {
+          localStorage.setItem("token", res.data.data.token);
+          this.$router.push("/main");
+        }
+      });
+    },
     focus() {
       this.$refs.noname.style.display = "none";
       this.$refs.nopassword.style.display = "none";
@@ -61,24 +83,24 @@ export default {
       }
     },
     login() {
-      let name = this.$refs.name.value;
-      let pw = this.$refs.password.value;
-      if (name) {
-        if (pw) {
-          if (this.$refs.resever2.innerHTML == "登录") {
-            this.portLogin(name, pw);
-          } else {
-            console.log("请求注册接口");
-            this.portRegistered(name, pw);
-          }
-        } else {
-          this.$refs.nopassword.innerHTML = "密码不能为空";
-          this.$refs.nopassword.style.display = "block";
-        }
-      } else {
-        this.$refs.noname.innerHTML = "账号不能为空";
-        this.$refs.noname.style.display = "block";
-      }
+      // let name = this.$refs.name.value;
+      // let pw = this.$refs.password.value;
+      // if (name) {
+      //   if (pw) {
+      //     if (this.$refs.resever2.innerHTML == "登录") {
+      //       this.portLogin(name, pw);
+      //     } else {
+      //       console.log("请求注册接口");
+      //       this.portRegistered(name, pw);
+      //     }
+      //   } else {
+      //     this.$refs.nopassword.innerHTML = "密码不能为空";
+      //     this.$refs.nopassword.style.display = "block";
+      //   }
+      // } else {
+      //   this.$refs.noname.innerHTML = "账号不能为空";
+      //   this.$refs.noname.style.display = "block";
+      // }
     },
     resever() {
       this.focus();
@@ -151,6 +173,7 @@ export default {
       });
     },
   },
+  watch: {},
 };
 </script>
 <style lang="less" scoped>
