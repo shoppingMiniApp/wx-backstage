@@ -6,13 +6,18 @@ import store from "./store";
 import "ant-design-vue/dist/antd.css";
 import VueRouter from "vue-router";
 import Router from "vue-router";
+
 const routerPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
   return routerPush.call(this, location).catch((error) => error);
 };
+import axios from "axios";
+Vue.prototype.$axios = axios;
+axios.defaults.baseURL = "http://api_devs.wanxikeji.cn/";
+
+Vue.use(Antd);
 Vue.use(VueRouter);
 Vue.config.productionTip = false;
-Vue.use(Antd);
 
 // import maxios from './maxios'
 // Vue.prototype.maxios = maxios

@@ -221,16 +221,6 @@ export default {
       this.modal2Visible = true;
     },
     gett() {
-      // this.listdata[this.num].orderId = this.$refs.index[0].value;
-      // this.listdata[this.num].userId = this.$refs.index[1].value;
-      // this.listdata[this.num].nickName = this.$refs.index[2].value;
-      // this.listdata[this.num].money = this.$refs.index[3].value;
-      // this.listdata[this.num].create = this.$refs.index[4].value;
-      // this.listdata[this.num].update = this.$refs.index[5].value;
-      // this.listdata[this.num].goodName = this.$refs.index[6].value;
-      // this.listdata[this.num].num = this.$refs.index[7].value;
-      // this.listdata[this.num].price = this.$refs.index[8].value;
-
       let token = localStorage.getItem("token");
       let order_id = this.$refs.index[0].value;
       let status = this.$refs.index[9].value;
@@ -243,12 +233,9 @@ export default {
           status,
         },
       }).then((res) => {
-        console.log(res);
         if (res.data.msg == "操作完成") {
           this.list();
-        } else {
-          console.log(this.num);
-        }
+        } 
       });
       this.modal2Visible = false;
     },

@@ -6,7 +6,7 @@
     <div class="login">
       <h1>Mall后台管理</h1>
       <p>
-        <span><a-icon type="user" /></span>
+        <span><a-icon type="user"/></span>
         <input
           type="text"
           placeholder="请输入您的账号"
@@ -17,7 +17,7 @@
         <b ref="noname">name不能为空</b>
       </p>
       <p>
-        <span><a-icon type="key" /></span>
+        <span><a-icon type="key"/></span>
         <a href="javascript:;" ref="open" v-if="show" @click="eyes()"
           ><a-icon type="eye"
         /></a>
@@ -40,7 +40,8 @@
   </div>
 </template>
 <script>
-import axios from "@/maxios/index.js"; /*引入封装的axios*/
+const axios = require("axios");
+
 export default {
   data() {
     return {
@@ -53,6 +54,23 @@ export default {
     };
   },
   methods: {
+    connect() {
+      this.$axios({
+        url: "api/admin/login",
+        method: "post",
+        data: {
+          name: this.name,
+          pw: this.password,
+        },
+        withCredentials: false,
+      }).then((res) => {
+        console.log(res);
+        if (res.data.msg == "") {
+          localStorage.setItem("token", res.data.data.token);
+          this.$router.push("/main");
+        }
+      });
+    },
     focus() {
       this.$refs.noname.style.display = "none";
       this.$refs.nopassword.style.display = "none";
@@ -154,6 +172,7 @@ export default {
       });
     },
   },
+  watch: {},
 };
 </script>
 <style lang="less" scoped>
