@@ -1,15 +1,41 @@
 // 管理账号管理
 <template>
   <div id="account">
-    <a-button @click="getData">接口</a-button>
-    <!-- <a-button class="editable-add-btn" @click="handleAdd">
-      Add
-    </a-button> -->
+    <a-button type="primary" @click="showModal" style="margin-bottom:20px"
+      >添加新用户</a-button
+    >
+    <a-modal
+      class="register"
+      v-model="visible"
+      title="添加新用户"
+      @ok="register"
+    >
+      <a-input
+        size="default"
+        v-model="name"
+        placeholder="请输入要注册用户名"
+        class="name"
+      >
+        <span slot="addonBefore">用户名</span>
+        <a-icon slot="suffix" type="user" />
+      </a-input>
+      <div></div>
+      <a-input-password
+        size="default"
+        v-model="password"
+        placeholder="请输入要注册密码"
+        class="password"
+      >
+        <span slot="addonBefore">密码：</span>
+      </a-input-password>
+    </a-modal>
+
     <a-table
       bordered
       :data-source="dataList"
       :columns="columns"
       :row-key="(dataList) => dataList.admin_id"
+      :loading="load"
     >
       <template slot="user_account" slot-scope="text">
         <div v-if="text == null" style="color:#999;">-此用户无名称-</div>
@@ -23,17 +49,17 @@
         <a-popconfirm
           v-if="dataList.length"
           title="要删除此用户嘛？"
-          @confirm="() => onDelete(record.user_id)"
+          @confirm="() => onDelete(record.admin_id)"
         >
           <a href="javascript:;">删除</a>
         </a-popconfirm>
       </template>
-      <template slot-scope="index, record" slot="switch">
+      <template slot-scope="record" slot="switch">
         <div>
           <a-switch
-            @click.native="onChange(check, $event, record, index)"
-            :checked="check"
-            :index="record.admin_id"
+            :loading="loads"
+            @click="onChange(record.admin_id)"
+            :checked="ban(record.status)"
           />
         </div>
       </template>
@@ -41,36 +67,17 @@
   </div>
 </template>
 <script>
-const axios = require("axios");
-
 export default {
-  components: {
-    // EditableCell,
-  },
+  components: {},
   data() {
     return {
-      te: true,
+      loads: false,
+      name: "",
+      password: "",
+      visible: false,
       check: false,
-      dataList: [
-        {
-          admin_id: 407,
-          admin_name: "955",
-          create_time: 1611302917,
-          last_login_time: 1611302924,
-          pw: "955",
-          status: 1,
-          token: "b114feb7295cec3df03dff8e2a4e5f67",
-        },
-        {
-          admin_id: 406,
-          admin_name: "9",
-          create_time: 1611302508,
-          last_login_time: 1611303402,
-          pw: "9",
-          status: 1,
-          token: "d7d60fe7d1cc955571cf3f0fb6c11d0a",
-        },
-      ],
+      load: true,
+      dataList: [],
       count: 2,
       columns: [
         {
@@ -93,106 +100,113 @@ export default {
           dataIndex: "last_login_time",
         },
         {
+          title: "禁用开关",
+          scopedSlots: { customRender: "switch" },
+        },
+        {
           title: "操作",
           dataIndex: "operation",
           scopedSlots: { customRender: "operation" },
-        },
-        {
-          title: "禁用开关",
-          scopedSlots: { customRender: "switch" },
         },
       ],
       token: localStorage.getItem("token"),
     };
   },
   methods: {
-    //*请求数据
-    getData() {
-      var _this = this;
-      axios({
-        method: "post",
-        url: "http://api_devs.wanxikeji.cn/api/admin/accountList",
-        data: {
-          token: _this.token,
-          page: "1",
-          size: "391",
-        },
-      })
-        .then(function(res) {
-          console.log(res.data.data, "list");
-          _this.dataList = res.data.data.data;
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+    ban(status) {
+      if (status == 1) {
+        return false;
+      } else {
+        return true;
+      }
     },
-    onChange(checked, event, record, index) {
-      console.log(checked, event, record, index);
-      console.log(event.currentTarget.getAttribute("index"), "e");
+    register() {
+      this.$axios({
+        method: "post",
+        url: "api/admin/register",
+        data: {
+          token: this.token,
+          name: this.name,
+          pw: this.password,
+        },
+      }).then((res) => {
+        if (res.data.code == 2000) {
+          console.log(res);
+          this.$message.success("注册成功！1秒后关闭", 1);
+          setTimeout(() => {
+            this.visible = false;
+            this.load = true;
+            this.getData();
+          }, 1200);
+        } else {
+          this.$message.error("用户已存在", 5);
+        }
+      });
+    },
+    //*请求数据
+    showModal() {
+      this.visible = true;
+      this.name = "";
+      this.password = "";
+    },
+    async getData() {
+      let res = await this.$axios({
+        method: "post",
+        url: "api/admin/accountList",
+        data: {
+          token: this.token,
+          page: "1",
+          size: "50",
+        },
+      });
 
-      //   console.log(checked);
-      //   console.log(record);
-      //   var _this = this;
-      //   axios({
-      //     method: "post",
-      //     url: "http://api_devs.wanxikeji.cn/api/admin/accountBan",
-      //     data: {
-      //       token: _this.token,
-      //       id: record.admin_id,
-      //     },
-      //   })
-      //     .then(function(res) {
-      //       console.log(res, "ban");
-      //     })
-      //     .catch(function(err) {
-      //       console.log(err);
-      //     });
+      if (res.data.code == 2000) {
+        this.load = false;
+        this.dataList = res.data.data.data;
+        // console.log(this.dataList);
+      }
+    },
+    async onChange(rec) {
+      this.loads = true;
+      let res = await this.$axios({
+        method: "post",
+        url: "api/admin/accountBan",
+        data: {
+          token: this.token,
+          id: rec.toString(),
+        },
+      });
+      console.log(res);
+      if (res.data.code == 2000) {
+        this.getData();
+        this.loads = false;
+        this.$message.success("操作成功", 1);
+      } else {
+        this.$message.error("操作有误", 1);
+      }
     },
     //*表单事件
-    // onCellChange(key, dataIndex, value) {
-    //   const dataSource = [...this.datas];
-    //   const target = dataSource.find((item) => item.key === key);
-    //   if (target) {
-    //     target[dataIndex] = value;
-    //     this.dataSource = dataSource;
-    //   }
-    // },
     onDelete(key) {
-      const dataSource = [...this.datas];
-      this.datas = dataSource.filter((item) => item.user_id !== key);
-      console.log(key, "k");
+      const dataSource = [...this.dataList];
+      this.dataList = dataSource.filter((item) => item.admin_id !== key);
+      this.$axios({
+        method: "post",
+        url: "api/admin/accountDelete",
+        data: {
+          token: this.token,
+          id: key,
+        },
+      }).then((res) => {
+        if (res.data.code == 2000) {
+          this.$message.success("已删除！", 1);
+          this.load = true;
+          this.getData();
+        }
+      });
     },
-    // handleAdd() {
-    //   const { count, dataSource } = this;
-    //   const newData = {
-    //     key: count,
-    //     name: `Edward King ${count}`,
-    //     age: 32,
-    //     address: `London, Park Lane no. ${count}`,
-    //   };
-    //   this.dataSource = [...dataSource, newData];
-    //   this.count = count + 1;
-    // },
   },
   mounted() {
-    // this.getData();
-    // var _this = this;
-    // axios({
-    //   method: "post",
-    //   url: "http://api_devs.wanxikeji.cn/api/admin/login",
-    //   data: {
-    //     name: "a",
-    //     pw: "a",
-    //   },
-    // })
-    //   .then(function(res) {
-    //     console.log(res.data.data.token, "login");
-    //     _this.token = res.data.data.token;
-    //   })
-    //   .catch(function(error) {
-    //     console.log(error);
-    //   });
-    // this.token = localStorage.getItem("token")
+    this.getData();
   },
 };
 </script>
@@ -251,6 +265,15 @@ export default {
     .editable-cell-icon {
       padding: 0 20px;
     }
+  }
+  // a-modal{
+
+  // }
+}
+.register {
+  div {
+    height: 20px;
+    width: 100%;
   }
 }
 </style>
