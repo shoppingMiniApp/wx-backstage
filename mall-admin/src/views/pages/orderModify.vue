@@ -6,14 +6,15 @@
       <a-table
         :columns="columns"
         :data-source="listdata"
-        size="small"
+        size="default"
         bordered
         rowKey="orderId"
+        :loading="loading"
       >
         <a slot="name" slot-scope="text">{{ text }}</a>
         <span slot="action" slot-scope="text, record">
-          <a @click="Delete(record)">删除</a>
-          <a-divider type="vertical" />
+          <!-- <a @click="Delete(record)">删除</a>
+          <a-divider type="vertical" /> -->
           <a @click="Edit(record)">编辑</a>
         </span>
       </a-table>
@@ -52,14 +53,14 @@ export default {
           dataIndex: "orderId",
           key: "orderId",
           scopedSlots: { customRender: "name" },
-          width: 80,
+          width: 100,
           sorter: (rowA, rowB) => rowA.orderId - rowB.orderId,
         },
         {
           title: "用户id",
           dataIndex: "userId",
           key: "userId",
-          width: 80,
+          width: 100,
           sorter: (rowA, rowB) => rowA.userId - rowB.userId,
         },
         {
@@ -79,14 +80,14 @@ export default {
           title: "单价",
           dataIndex: "price",
           key: "price",
-          width: 80,
+          width: 100,
           sorter: (rowA, rowB) => rowA.price - rowB.price,
         },
         {
           title: "数量",
           dataIndex: "num",
           key: "num",
-          width: 80,
+          width: 100,
           align: "center",
           sorter: (rowA, rowB) => rowA.num - rowB.num,
         },
@@ -94,7 +95,7 @@ export default {
           title: "付款",
           dataIndex: "money",
           key: "money",
-          width: 80,
+          width: 100,
           sorter: (rowA, rowB) => rowA.money - rowB.money,
         },
         {
@@ -126,16 +127,19 @@ export default {
           dataIndex: "status",
           key: "status",
           ellipsis: true,
+          width: 100,
         },
         {
           title: "Action",
           key: "action",
           scopedSlots: { customRender: "action" },
+          width: 100,
         },
       ],
       modal2Visible: false,
       rowdata: {},
       num: "",
+      loading: true,
     };
   },
   methods: {
@@ -146,6 +150,7 @@ export default {
         url: "http://api_devs.wanxikeji.cn/api/admin/OrderList",
         params: {
           token,
+          size: 30,
         },
       }).then((res) => {
         this.listdata = [];
@@ -162,6 +167,7 @@ export default {
           json.price = item.childern[0].price;
           json.status = this.status(item.status);
           this.listdata.push(json);
+          this.loading = false
         });
       });
     },
@@ -235,9 +241,11 @@ export default {
       }).then((res) => {
         if (res.data.msg == "操作完成") {
           this.list();
+          this.loading = true
         } 
       });
       this.modal2Visible = false;
+      this.loading = true
     },
   },
   mounted() {

@@ -201,6 +201,7 @@ input {
   padding: 40px 60px;
   border-radius: 12px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+  background-color: #fff;
   h1 {
     text-align: center;
     margin-bottom: 40px;
@@ -233,6 +234,7 @@ input {
       padding: 0 40px;
       border-radius: 4px;
       width: 100%;
+      border: 1px solid #999;
     }
     b {
       display: none;
