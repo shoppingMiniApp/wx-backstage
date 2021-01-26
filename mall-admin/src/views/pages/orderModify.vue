@@ -155,20 +155,24 @@ export default {
       }).then((res) => {
         this.listdata = [];
         res.data.data.data.forEach((item) => {
-          let json = {};
-          json.orderId = item.order_id;
-          json.userId = item.user_id;
-          json.nickName = item.nick_name;
-          json.money = item.money;
-          json.create = this.time(item.create_time);
-          json.update = this.time(item.update_time);
-          json.goodName = item.childern[0].good_name;
-          json.num = item.childern[0].num;
-          json.price = item.childern[0].price;
-          json.status = this.status(item.status);
-          this.listdata.push(json);
-          this.loading = false
+          if (item.create_time >= 1611041946) {
+            if (item.childern) {
+              let json = {};
+              json.orderId = item.order_id;
+              json.userId = item.user_id;
+              json.nickName = item.nick_name;
+              json.money = item.money;
+              json.create = this.time(item.create_time);
+              json.update = this.time(item.update_time);
+              json.goodName = item.childern[0].good_name;
+              json.num = item.childern[0].num;
+              json.price = item.childern[0].price;
+              json.status = this.status(item.status);
+              this.listdata.push(json);
+            }
+          }
         });
+        this.loading = false;
       });
     },
     status(str) {
@@ -241,11 +245,11 @@ export default {
       }).then((res) => {
         if (res.data.msg == "操作完成") {
           this.list();
-          this.loading = true
-        } 
+          this.loading = true;
+        }
       });
       this.modal2Visible = false;
-      this.loading = true
+      this.loading = true;
     },
   },
   mounted() {
