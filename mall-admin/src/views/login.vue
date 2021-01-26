@@ -4,7 +4,7 @@
       <img src="@/assets/loginBackground.jpg" alt="" />
     </div>
     <div class="login">
-      <h1>小程序后台管理</h1>
+      <h1>Mall后台管理</h1>
       <p>
         <span><a-icon type="user" /></span>
         <input
@@ -12,8 +12,9 @@
           placeholder="请输入您的账号"
           ref="name"
           @focus="focus()"
+          v-model="inputName"
         />
-        <b ref="noname">nama不能为空</b>
+        <b ref="noname">name不能为空</b>
       </p>
       <p>
         <span><a-icon type="key" /></span>
@@ -28,11 +29,12 @@
           placeholder="请输入您的密码"
           ref="password"
           @focus="focus()"
+          v-model="inputPw"
         />
         <b ref="nopassword">nama不能为空</b>
       </p>
-      <p @click="login()" class="go" ref="resever2">登录</p>
-      <a href="#" ref="resever1" @click="resever()">注册</a>
+      <button @click="login()" ref="resever2">{{retext2}}</button>
+      <a href="#" ref="resever1" @click="resever()">{{retext1}}</a>
     </div>
     <div class="message" ref="success">注册成功</div>
   </div>
@@ -44,6 +46,10 @@ export default {
     return {
       show: false,
       token: "",
+      inputName:"",
+      inputPw:"",
+      retext1:"注册",
+      retext2:"登录",
     };
   },
   methods: {
@@ -61,15 +67,12 @@ export default {
       }
     },
     login() {
-      let name = this.$refs.name.value;
-      let pw = this.$refs.password.value;
-      if (name) {
-        if (pw) {
-          if (this.$refs.resever2.innerHTML == "登录") {
-            this.portLogin(name, pw);
+      if (this.inputName !== "") {
+        if (this.inputPw !== "") {
+          if (this.retext2 == "登录") {
+            this.portLogin(this.inputName,this.inputPw);
           } else {
-            console.log("请求注册接口");
-            this.portRegistered(name, pw);
+            this.portRegistered(this.inputName,this.inputPw);
           }
         } else {
           this.$refs.nopassword.innerHTML = "密码不能为空";
@@ -82,14 +85,14 @@ export default {
     },
     resever() {
       this.focus();
-      this.$refs.name.value = "";
-      this.$refs.password.value = "";
-      if (this.$refs.resever1.innerHTML == "注册") {
-        this.$refs.resever1.innerHTML = "登录";
-        this.$refs.resever2.innerHTML = "注册";
+      this.inputName = "";
+      this.inputPw = "";
+      if (this.retext1 == "注册") {
+        this.retext1 = "登录";
+        this.retext2 = "注册";
       } else {
-        this.$refs.resever1.innerHTML = "注册";
-        this.$refs.resever2.innerHTML = "登录";
+        this.retext1 = "注册";
+        this.retext2 = "登录";
       }
     },
     portLogin(name, pw) {
@@ -106,9 +109,8 @@ export default {
             this.$refs.nopassword.style.display = "block";
             this.$refs.nopassword.innerHTML = result.data.msg;
           } else {
-            console.log(result);
             localStorage.setItem("token", result.data.data.token);
-            // this.$router.push("/main");
+            this.$router.push("/main");
           }
         })
         .catch((err) => {
@@ -146,6 +148,7 @@ export default {
             setTimeout(() => {
               this.$refs.success.style.display = "none";
             }, 1000);
+            this.resever()
           }
         });
       });
@@ -159,6 +162,7 @@ img,
 p,
 span,
 a,
+button,
 input {
   margin: 0;
   padding: 0;
@@ -219,17 +223,17 @@ input {
       font-size: 16px;
     }
   }
-  .go {
+  button {
     width: 100%;
     height: 40px;
-    text-align: center;
     background: #1c84c6;
     line-height: 40px;
     border-radius: 6px;
     margin-top: 20px;
     color: #fff;
     font-size: 18px;
-    cursor: pointer;
+    outline-style: none;
+    border: none;
   }
   a {
     position: absolute;
@@ -247,6 +251,7 @@ input {
   img {
     display: block;
     width: 100%;
+    height: 100%;
   }
 }
 

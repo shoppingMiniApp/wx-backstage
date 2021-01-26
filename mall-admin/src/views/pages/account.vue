@@ -1,9 +1,9 @@
 // 用户管理
 <template>
   <div id="account">
-    <a-button class="editable-add-btn" @click="handleAdd">
+    <!-- <a-button class="editable-add-btn" @click="handleAdd">
       Add
-    </a-button>
+    </a-button> -->
     <a-table bordered :data-source="dataSource" :columns="columns">
       <template slot="name" slot-scope="text, record">
         <editable-cell
