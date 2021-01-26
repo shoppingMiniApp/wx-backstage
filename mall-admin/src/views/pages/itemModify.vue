@@ -197,14 +197,11 @@
         bordered
         :data-source="dataSource"
         :columns="columns"
-        :pagination="{ pageSize: 5 }"
+        :pagination="{ pageSize: 7 }"
         :row-key="(dataSource) => dataSource.good_id"
       >
-        <template slot="good_name" slot-scope="text, record">
-          <editable-cell
-            :text="text"
-            @change="onCellChange(record.key, 'good_name', $event)"
-          />
+        <template slot="good_name" slot-scope="text">
+          <span>{{ text }}</span>
         </template>
         <template slot="image" slot-scope="text, record">
           <img :src="record.img" alt="" class="good-img" />
@@ -256,58 +253,8 @@ function getbatchBase64(file) {
   });
 }
 const key = "updatable";
-const data = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
-  });
-}
-
-const EditableCell = {
-  template: `
-      <div class="editable-cell">
-        <div v-if="editable" class="editable-cell-input-wrapper">
-          <a-input :value="value" @change="handleChange" @pressEnter="check" /><a-icon
-            type="check"
-            class="editable-cell-icon-check"
-            @click="check"
-          />
-        </div>
-        <div v-else class="editable-cell-text-wrapper">
-          <div>{{ value || ' ' }}</div>
-          <a-icon type="edit" class="editable-cell-icon" @click="edit" />
-        </div>
-      </div>
-    `,
-  props: {
-    text: String,
-  },
-  data() {
-    return {
-      value: this.text,
-      editable: false,
-    };
-  },
-  methods: {
-    handleChange(e) {
-      const value = e.target.value;
-      this.value = value;
-    },
-    check() {
-      this.editable = false;
-      this.$emit("change", this.value);
-    },
-    edit() {
-      this.editable = true;
-    },
-  },
-};
 export default {
   components: {
-    EditableCell,
     quillEditor,
   },
   data() {
@@ -381,7 +328,6 @@ export default {
         labelCol: { span: 4 },
         wrapperCol: { span: 14 },
       },
-      data,
       selectedRowKeys: [], // Check here to configure the default column
       dataSource: [],
       count: 2,
@@ -547,8 +493,18 @@ export default {
     // *添加商品按钮
     handleAdd() {
       this.mode = "add";
-      this.visible = true;
+      this.ruleForm = {
+        goodName: "",
+        goodPrice: "",
+      };
+      this.content = "";
+      this.fileList = [];
+      this.imageUrl = "";
+      this.arr = [];
       this.addAndEdit = "添加商品信息";
+      this.spuData.domains = [];
+      this.skuData.domains = [];
+      this.visible = true;
     },
     // *添加按键
     handleOk(formName, txt) {
@@ -658,7 +614,7 @@ export default {
       console.log(record);
       this.addAndEdit = "编辑商品信息";
 
-      axios({
+      this.$axios({
         method: "POST",
         url: "api/admin/goodInfo",
         data: {
@@ -666,7 +622,7 @@ export default {
           good_id: record.good_id,
         },
       }).then((res) => {
-        console.log(res.data.data);
+        console.log(res.data.data, "datas");
         this.editGood_id = res.data.data.good_id;
         this.ruleForm.goodName = res.data.data.good_name;
         this.ruleForm.goodPrice = res.data.data.price;
@@ -674,26 +630,26 @@ export default {
         this.setClassicy();
         this.content = JSON.parse(res.data.data.info[0].info);
         console.log(JSON.parse(res.data.data.info[0].edition), "wwwwwww");
-        for (const keys in JSON.parse(res.data.data.info[0].colour)) {
-          console.log(keys, JSON.parse(res.data.data.info[0].colour)[keys]);
+        let editList = JSON.parse(res.data.data.info[0].edition);
+        let colour = JSON.parse(res.data.data.info[0].colour);
+
+        console.log(typeof colour, "list");
+        for (let key in colour) {
+          console.log(colour[key], "2");
           this.spuData.domains.push({
-            key: keys,
-            value: JSON.parse(res.data.data.info[0].colour)[keys],
+            key: key,
+            value: colour[key],
           });
         }
-        for (
-          let i = 0;
-          i < JSON.parse(res.data.data.info[0].edition).length;
-          i++
-        ) {
-          for (let j in JSON.parse(res.data.data.info[0].edition)[i]) {
+
+        // this.spuData = [{ ...editList }];
+        for (let i = 0; i < editList.length; i++) {
+          for (let j in editList[i]) {
             this.skuData.domains.push({
               key: j,
-              value: JSON.parse(res.data.data.info[0].edition)[i][j],
+              value: editList[i][j],
             });
-            console.log(
-              j + ":" + JSON.parse(res.data.data.info[0].edition)[i][j]
-            );
+            // console.log(j + ":" + editList[i][j]);
           }
         }
         let list = JSON.parse(res.data.data.info[0].imgs);
@@ -722,6 +678,8 @@ export default {
       this.$message.info({ content: "取消添加商品!", key, duration: 2 });
       this.spuData.domains = [];
       this.skuData.domains = [];
+      // this.domains = {};
+      // this.$el
     },
     // *封面上传
     handleChangeimg(info) {
