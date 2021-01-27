@@ -3,7 +3,7 @@
     <div class="img">
       <img src="@/assets/loginBackground.jpg" alt="" />
     </div>
-    <div class="login">
+     <div class="login">
       <h1>Mall后台管理</h1>
       <p>
         <span><a-icon type="user"/></span>
@@ -36,7 +36,8 @@
       <button @click="login()" ref="resever2">{{retext2}}</button>
       <a href="#" ref="resever1" @click="resever()">{{retext1}}</a>
     </div>
-    <div class="message" ref="success">注册成功</div>
+    <div class="message" ref="success">注册成功</div> -->
+    
   </div>
 </template>
 <script>
@@ -47,13 +48,15 @@ export default {
     return {
       show: false,
       token: "",
-      inputName:"",
-      inputPw:"",
-      retext1:"注册",
-      retext2:"登录",
+      inputName: "",
+      inputPw: "",
+      retext1: "注册",
+      retext2: "登录",
+
     };
   },
   methods: {
+    
     connect() {
       this.$axios({
         url: "api/admin/login",
@@ -88,9 +91,9 @@ export default {
       if (this.inputName !== "") {
         if (this.inputPw !== "") {
           if (this.retext2 == "登录") {
-            this.portLogin(this.inputName,this.inputPw);
+            this.portLogin(this.inputName, this.inputPw);
           } else {
-            this.portRegistered(this.inputName,this.inputPw);
+            this.portRegistered(this.inputName, this.inputPw);
           }
         } else {
           this.$refs.nopassword.innerHTML = "密码不能为空";
@@ -166,13 +169,12 @@ export default {
             setTimeout(() => {
               this.$refs.success.style.display = "none";
             }, 1000);
-            this.resever()
+            this.resever();
           }
         });
       });
     },
   },
-  watch: {},
 };
 </script>
 <style lang="less" scoped>
@@ -292,4 +294,5 @@ input {
   transform: translate(-50%, -50%);
   border-radius: 12px;
 }
+
 </style>
