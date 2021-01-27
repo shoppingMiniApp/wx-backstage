@@ -10,6 +10,7 @@
       bordered
       :data-source="dataList"
       :row-key="(dataList) => dataList.banner_id"
+      :pagination="{ pageSize: 6 }"
     >
       <template slot="pic" slot-scope="text">
         <img :src="text" style="width:100px" />
@@ -44,7 +45,7 @@
       <a-input
         size="default"
         v-model="title"
-        placeholder="请输入要注册用户名"
+        placeholder="请输入标题"
         class="name"
       >
         <span slot="addonBefore">标题</span>
